@@ -164,14 +164,14 @@ const createCard   = function(obj){
 			</div>
 	`;
 	return card;
-}
+};
 //пишем ф-ю для загр карточек
 const renderCards = function(data){
 	document.body.classList.add('show-goods');
 	longGoodsList.textContent = '';
 	const cards = data.map(createCard);
 	longGoodsList.append(...cards);//здесь перебор карточек метод новый
-}
+};
 
 more.addEventListener('click', event => {
 	event.preventDefault();
@@ -189,7 +189,7 @@ const filterCards = function(field, value){
 	getGoods()
 	.then(data => data.filter(d => d[field].toLowerCase() === value.toLowerCase()))
 	.then(renderCards);	
-}
+};
 
 
 navigationLink.forEach(btn => {
@@ -203,7 +203,7 @@ navigationLink.forEach(btn => {
 			getGoods().then(renderCards);
 		}
 	})
-})
+});
 	
 //banners event
 
@@ -225,6 +225,38 @@ buttons.forEach(btn => {
 		})
 	})
 
-})
+});
+//работа с сервером
+
+//получаем форму
+
+const modalForm = document.querySelector('.modal-form');
+
+//создаем ф-ю которая работает с PHP
+//код ниже используется в других проектах
+const postData = dataUser => fetch('server.php', {
+	method: 'POST',
+	body: dataUser,
+});
+
+// postData('hello');//проверка в консоли смотри 
+
+//вешаем событие на форму
+
+modalForm.addEventListener('submit', function (event) {
+	event.preventDefault();
+
+	const formData = new FormData(modalForm);
+
+	formData.append('cart', cart.cartGoods);
+
+postData(formData);//проверка в консоли смотри 
+});
 
 
+//ERROR...................
+
+ document.querySelector('.cart-buy').onclick = () => {
+	 console.log('Ошибка т.к. сервер не отвечает на postData(formData). Решу ..где то в коде запара');
+	 
+ }
