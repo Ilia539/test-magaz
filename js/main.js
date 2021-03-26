@@ -231,32 +231,55 @@ buttons.forEach(btn => {
 //получаем форму
 
 const modalForm = document.querySelector('.modal-form');
+const userName = document.querySelector('.user-name');
+const userTel = document.querySelector('.user-tel');
 
-//создаем ф-ю которая работает с PHP
-//код ниже используется в других проектах
 const postData = dataUser => fetch('server.php', {
-	method: 'POST',
-	body: dataUser,
+  method: 'POST',
+  body: dataUser,
 });
 
-// postData('hello');//проверка в консоли смотри 
+modalForm.addEventListener('submit', event => {
+  event.preventDefault();
 
-//вешаем событие на форму
+  if (userName.value === '' || userTel.value === '' || userName.value.length < 3) {
+    console.error('Имя или номер телефона не введены');
+  } else if (cart.cartGoods.length === 0) {
+    console.error('Корзина не может быть пустой');
+  } else {
 
-modalForm.addEventListener('submit', function (event) {
-	event.preventDefault();
+    const formData = new FormData(modalForm); 
 
-	const formData = new FormData(modalForm);
+    formData.append('cart', JSON.stringify(cart.cartGoods));
+    
+  
+    postData(formData)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(response.status);
+        }
+        alert('Ваша заявка успешно отправлена, с вами свяжуться в ближайшее время');
+        console.log(response.status);       
+      })
+      .catch(err => {
+        alert('К сожалению произошла ошибка');
+        console.log(err);
+      })
+      .finally(() => {
+        closeModal();
+        modalForm.reset();
+        cart.cartGoods.length = 0;
+        cart.renderCart();
+      });
+  }
 
-	formData.append('cart', cart.cartGoods);
-
-postData(formData);//проверка в консоли смотри 
+  
 });
 
 
 //ERROR...................
 
  document.querySelector('.cart-buy').onclick = () => {
-	 console.log('Ошибка т.к. сервер не отвечает на postData(formData). Решу ..где то в коде запара');
+	 console.log('Ошибка т.к. сервер не отвечает на postData(formData). Решу ..где то в коде');
 	 
  }
