@@ -20,9 +20,6 @@ const cartTableGoods   = document.querySelector('.cart-table__goods');
 const cardTableTotal   = document.querySelector('.card-table__total');
 const cartCount		   = document.querySelector('.cart-count');
 
-// setTimeout(function d(){sliderButtonNext.click(); setTimeout(d, 3000)}, 3000);
-
-
 
 const cart = {
 	cartGoods: [],
@@ -70,7 +67,7 @@ const cart = {
 		if(this.cartGoods.find(item => item.id === id)){
 			this.plusGood(id)
 			} else {
-			getData()
+			getGoods()
 				.then(arr => arr.find(item => item.id === id))
 				.then(({id, name, price}) => {
 					this.cartGoods.push({
@@ -141,15 +138,18 @@ const navigationLink = document.querySelectorAll('.navigation-link');
 const longGoodsList  = document.querySelector('.long-goods-list');
 const logoLink 		 = document.querySelector('.container');
 
-const getData  = async function() {
+//ф-ю ниже можно использовать для получения данных в любом другом коде
+
+const getGoods  = async function() {
 	const result = await fetch('db/db.json');
 			if(!result.ok){
 				throw 'Ошибка: ' + response.status
 			}
 		return await result.json();
 };
+//............................
 
-const renderCard   = function(obj){
+const createCard   = function(obj){
 	const card     = document.createElement('div');
 	card.className = 'col-lg-3 col-sm-6';
 	card.innerHTML = `
@@ -165,17 +165,17 @@ const renderCard   = function(obj){
 	`;
 	return card;
 }
-
-const addCards = function(data){
+//пишем ф-ю для загр карточек
+const renderCards = function(data){
 	document.body.classList.add('show-goods');
 	longGoodsList.textContent = '';
-	let cards = data.map(renderCard);
-	longGoodsList.append(...cards);
+	const cards = data.map(createCard);
+	longGoodsList.append(...cards);//здесь перебор карточек метод новый
 }
 
 more.addEventListener('click', event => {
 	event.preventDefault();
-	getData().then(addCards);
+	getGoods().then(renderCards);
 	const logoLink = document.querySelector('.container');
 	setTimeout(() => logoLink.scrollIntoView({
 				behavior: 'smooth', 
@@ -186,9 +186,9 @@ more.addEventListener('click', event => {
 //filter goods
 
 const filterCards = function(field, value){
-	getData()
+	getGoods()
 	.then(data => data.filter(d => d[field].toLowerCase() === value.toLowerCase()))
-	.then(addCards);	
+	.then(renderCards);	
 }
 
 
@@ -200,7 +200,7 @@ navigationLink.forEach(btn => {
 		if(field && value){	
 			filterCards(field, value)
 		} else {
-			getData().then(addCards);
+			getGoods().then(renderCards);
 		}
 	})
 })
