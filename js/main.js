@@ -20,17 +20,9 @@ const cartTableGoods   = document.querySelector('.cart-table__goods');
 const cardTableTotal   = document.querySelector('.card-table__total');
 const cartCount		   = document.querySelector('.cart-count');
 
-setTimeout(function d(){sliderButtonNext.click(); setTimeout(d, 3000)}, 3000);
+// setTimeout(function d(){sliderButtonNext.click(); setTimeout(d, 3000)}, 3000);
 
-const getData  = async function() {
-	let result = await fetch('../db/db.json')
-		.then(response => {
-			if(!response.ok){
-				console.error('Ошибочка: ' + response.status)
-			}
-			return response;})
-		return await result.json();
-}
+
 
 const cart = {
 	cartGoods: [],
@@ -148,6 +140,14 @@ const more 			 = document.querySelector('.more');
 const navigationLink = document.querySelectorAll('.navigation-link');
 const longGoodsList  = document.querySelector('.long-goods-list');
 const logoLink 		 = document.querySelector('.container');
+
+const getData  = async function() {
+	const result = await fetch('db/db.json');
+			if(!result.ok){
+				throw 'Ошибка: ' + response.status
+			}
+		return await result.json();
+};
 
 const renderCard   = function(obj){
 	const card     = document.createElement('div');
